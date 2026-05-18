@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuestionario de Higiene y Seguridad en el Trabajo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       VARIABLES Y RESET
+    ============================================================ */
+    :root {
+      --bg:         #F5F3EE;
+      --surface:    #FFFFFF;
+      --border:     #E0DDD6;
+      --accent:     #1A3A2A;      
+      --accent2:    #D4A843;      
+      --text:       #1C1C1C;
+      --muted:      #6B6B6B;
+      --low:        #C0392B;
+      --med:        #D4A843;
+      --high:       #27AE60;
+      --radius:     14px;
+      --shadow:     0 4px 24px rgba(0,0,0,.08);
+      --transition: .35s cubic-bezier(.4,0,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ============================================================
+       CABECERA
+    ============================================================ */
+    header {
+      width: 100%;
+      background: var(--accent);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+
+    header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      color: #fff;
+      letter-spacing: -.01em;
+      line-height: 1.2;
+    }
+
+    header .shield {
+      font-size: 2rem;
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
+      transition: transform var(--transition);
+    }
+    
+    header .shield:active {
+      transform: scale(0.9);
+    }
+
+    /* ============================================================
+       CONTENEDOR PRINCIPAL
+    ============================================================ */
+    main {
+      width: 100%;
+      max-width: 740px;
+      padding: 32px 20px 60px;
+      flex: 1;
+    }
+
+    /* ============================================================
+       PANTALLAS (vistas)
+    ============================================================ */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ============================================================
+       PANTALLA: INTRODUCCIÓN
+    ============================================================ */
+    #screen-intro .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px 36px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    #screen-intro h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    #screen-intro p {
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .intro-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+    }
+
+    /* ============================================================
+       PANTALLA: REGISTRO
+    ============================================================ */
+    #screen-register .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 36px;
+      border: 1px solid var(--border);
+    }
+
+    #screen-register h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    #screen-register p.subtitle {
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-size: .95rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 7px;
+      font-size: .9rem;
+    }
+
+    .error-msg {
+      color: var(--low);
+      font-size: .82rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* ============================================================
+       PANTALLA: CUESTIONARIO
+    ============================================================ */
+    .progress-wrap { margin-bottom: 24px; }
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .progress-bar-bg {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    .question-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 36px 28px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn .35s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .q-number {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 14px;
+    }
+
+    .q-text {
+      font-size: 1.08rem;
+      font-weight: 500;
+      line-height: 1.55;
+      margin-bottom: 26px;
+      white-space: pre-wrap;
+    }
+
+    .options-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .option-item label {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      cursor: pointer;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      transition: border-color var(--transition), background var(--transition);
+      font-size: .93rem;
+      line-height: 1.45;
+    }
+    .option-item label:hover {
+      border-color: var(--accent);
+      background: #EDF4F0;
+    }
+    .option-item input[type="radio"] { position: absolute; opacity: 0; width: 0; }
+
+    .radio-circle {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .radio-circle::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      display: none;
+    }
+    .option-item input[type="radio"]:checked + label {
+      border-color: var(--accent);
+      background: #EDF4F0;
+    }
+    .option-item input[type="radio"]:checked + label .radio-circle {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .option-item input[type="radio"]:checked + label .radio-circle::after { display: block; }
+
+    /* Drag and Drop */
+    .sortable-list { list-style: none; display: flex; flex-direction: column; gap: 11px; padding: 0; }
+    .sortable-item { display: flex; align-items: center; gap: 15px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 16px; cursor: grab; font-size: .93rem; line-height: 1.45; user-select: none; transition: box-shadow 0.2s, background 0.2s; }
+    .sortable-item:active { cursor: grabbing; }
+    .sortable-item.dragging { opacity: 0.7; background: #EDF4F0; border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 10; }
+    .drag-handle { font-size: 1.4rem; color: var(--muted); cursor: grab; line-height: 1; }
+
+    /* Estilos para Preguntas con Imágenes */
+    .image-options {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 10px;
+      flex-wrap: wrap; /* Para que baje si la pantalla es muy pequeña */
+    }
+    .img-option-card {
+      flex: 1;
+      min-width: 130px;
+      max-width: 280px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+      background: var(--bg);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .img-option-card:hover {
+      border-color: var(--accent);
+      background: #EDF4F0;
+    }
+    .img-option-card.selected {
+      border-color: var(--accent);
+      background: #EDF4F0;
+      box-shadow: 0 4px 12px rgba(26, 58, 42, 0.12);
+    }
+    .img-option-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      mix-blend-mode: multiply; /* Evita fondos blancos feos si la imagen tiene fondo blanco y el contenedor es de otro color */
+    }
+    .img-option-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .alert-answer { color: var(--low); font-size: .83rem; margin-top: 14px; font-weight: 500; display: none; }
+
+    .nav-buttons { display: flex; justify-content: flex-end; align-items: center; margin-top: 28px; gap: 12px; }
+    .btn { padding: 11px 26px; border-radius: 9px; border: none; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: .92rem; cursor: pointer; transition: opacity var(--transition), transform var(--transition); }
+    .btn:hover { opacity: .88; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-large { padding: 14px 32px; font-size: 1.05rem; width: 100%; max-width: 300px; margin: 0 auto; display: block; }
+
+    /* ============================================================
+       PANTALLA: RESULTADO / PANEL
+    ============================================================ */
+    #screen-result .result-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+    .result-banner { padding: 36px 36px 28px; text-align: center; background: #edf7f0; }
+    .result-icon { font-size: 3.2rem; margin-bottom: 10px; }
+    .result-level { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 12px; color: var(--high); }
+    .result-message { font-size: 1.05rem; color: var(--text); line-height: 1.6; max-width: 480px; margin: 0 auto; }
+    .result-body { padding: 28px 36px 36px; border-top: 1px solid var(--border); }
+    .result-body h3 { font-family: 'Syne', sans-serif; font-size: 1rem; margin-bottom: 16px; }
+
+    .answers-summary { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .answer-row { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 12px 16px; font-size: .85rem; line-height: 1.4; }
+    .answer-row .ar-q { font-weight: 500; margin-bottom: 3px; }
+    .answer-row .ar-a { color: var(--muted); }
+
+    #screen-panel h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 6px; }
+    #screen-panel .panel-subtitle { color: var(--muted); font-size: .9rem; margin-bottom: 24px; }
+    .panel-actions { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: .88rem; }
+    thead th { background: var(--accent); color: #fff; padding: 13px 16px; text-align: left; font-weight: 600; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background var(--transition); }
+    tbody tr:hover { background: var(--bg); }
+    tbody td { padding: 12px 16px; vertical-align: top; line-height: 1.4; }
+    .btn-detail { padding: 5px 12px; font-size: .78rem; border-radius: 6px; background: var(--bg); border: 1.5px solid var(--border); cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: border-color var(--transition); }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--surface); border-radius: var(--radius); box-shadow: 0 12px 48px rgba(0,0,0,.2); width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; padding: 32px; }
+    .modal-box h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; margin-bottom: 4px; }
+    .modal-meta { font-size: .82rem; color: var(--muted); margin-bottom: 20px; }
+    .modal-close { float: right; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: .95rem; }
+    .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    @media (max-width: 540px) {
+      header { flex-wrap: wrap; gap: 10px; }
+      #screen-intro .card, #screen-register .card, .question-card { padding: 28px 20px; }
+      .nav-buttons .btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="shield" onclick="requestAdminAccess()" title="Área restringida">🦺</span>
+  <h1>Cuestionario de Higiene y Seguridad en el Trabajo</h1>
+</header>
+
+<main>
+  <div id="screen-intro" class="screen active">
+    <div class="card">
+      <div class="intro-icon">👋</div>
+      <h2>¡Te damos la bienvenida!</h2>
+      <p>
+        Somos de la <strong>Universidad Nacional de San Luis (UNSL)</strong>.<br><br>
+        Al destinar unos minutos para responder este cuestionario nos estás ayudando muchísimo con nuestro proyecto final sobre Higiene y Seguridad en el Trabajo.<br><br>
+        ¡Muchas gracias por tu tiempo y colaboración!
+      </p>
+      <button class="btn btn-primary btn-large" onclick="goToRegister()">Comenzar →</button>
+    </div>
+  </div>
+
+  <div id="screen-register" class="screen">
+    <div class="card">
+      <h2>Antes de comenzar…</h2>
+      <p class="subtitle">Indicá tu sector para registrar tus respuestas de forma anónima. Solo te tomará un momento.</p>
+
+      <div class="form-group">
+        <label>Sector o puesto de trabajo *</label>
+        <div style="display: flex; gap: 12px; margin-top: 10px;">
+          <button type="button" class="btn btn-secondary" id="btn-operativo" onclick="setSector('Operativo')" style="flex: 1;">Operativo</button>
+          <button type="button" class="btn btn-secondary" id="btn-admin" onclick="setSector('Administrativo')" style="flex: 1;">Administrativo</button>
+        </div>
+        <input type="hidden" id="input-sector" value="" />
+        <span class="error-msg" id="err-sector" style="margin-top: 8px;">Por favor seleccioná tu sector o puesto.</span>
+      </div>
+
+      <div style="margin-top: 28px;">
+        <button class="btn btn-primary" onclick="startQuiz()" style="width:100%; padding:14px;">Iniciar cuestionario →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-quiz" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="q-counter">Pregunta 1 de X</span>
+        <span id="q-percent">0 %</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="question-card" class="question-card"></div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div id="screen-result" class="screen">
+    <div class="result-card">
+      <div class="result-banner" id="result-banner">
+        <div class="result-icon">🎉</div>
+        <div class="result-level">¡Cuestionario Completado!</div>
+        <div class="result-message">Muchas gracias por tu tiempo y colaboración. Tus respuestas han sido registradas y nos ayudarán a mejorar la seguridad en el trabajo.</div>
+      </div>
+      <div class="result-body">
+        <h3>📋 Resumen de tus respuestas</h3>
+        <div class="answers-summary" id="answers-summary"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-panel" class="screen">
+    <h2>📊 Panel de resultados</h2>
+    <p class="panel-subtitle">Todos los cuestionarios completados en este dispositivo. (Vista de administrador)</p>
+    <div class="panel-actions">
+      <button class="btn btn-secondary" onclick="restartQuiz()">← Salir del panel</button>
+    </div>
+    <div id="panel-content"></div>
+  </div>
+
+</main>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   BANCOS DE PREGUNTAS (SEPARADOS POR SECTOR)
+================================================================ */
+
+const PREGUNTAS_OPERATIVO = [
+  { tipo: "opcion", texto: "Tenés que mover varios cajones de cerveza que están en el piso y llevarlos hasta una mesa que está a unos 8 metros. Un compañero te dice: “llevalos rápido así terminamos antes”. ¿Qué hacés?", opciones: [ { texto: "Los levanto rápido así termino antes" }, { texto: "Los arrastro como pueda" }, { texto: "Busco un carro/zorra o pido ayuda" }, { texto: "Los levanto doblando la espalda pero con cuidado" } ] },
+  { tipo: "opcion", texto: "Un operario levanta un cajón de cerveza del piso con las piernas estiradas y la espalda inclinada hacia adelante. ¿Qué está haciendo mal?", opciones: [ { texto: "Nada, esa postura es normal" }, { texto: "Debería flexionar las rodillas y mantener la espalda recta" }, { texto: "Debería levantarlo más rápido" }, { texto: "El problema es solo el peso del cajón" } ] },
+  { tipo: "orden", texto: "Ordená los pasos para levantar una carga correctamente (arrastrá las opciones hacia arriba o abajo para ordenarlas):", opciones: [ "Flexionar rodillas", "Mantener la espalda recta", "Acercar la carga al cuerpo", "Levantarse con la fuerza de las piernas" ] },
+  { tipo: "opcion", texto: "“Como el cajón de cerveza no pesa tanto, no hace falta aplicar la técnica correcta para levantarlo”.", opciones: [ { texto: "Mito" }, { texto: "Realidad" } ] },
+  { tipo: "opcion", texto: "Levantar cajones de cerveza desde el piso durante gran parte del turno. ¿Qué tan riesgoso te parece?", opciones: [ { texto: "1 Nada riesgoso" }, { texto: "2 Poco riesgoso" }, { texto: "3 Medianamente riesgoso" }, { texto: "4 Riesgoso" }, { texto: "5 Muy riesgoso" } ] },
+  { tipo: "opcion", texto: "Vas a mover cajones de cerveza por un momento “rápido”. Decidís no colocarte los EPP porque es algo simple. ¿Es correcto?", opciones: [ { texto: "Sí, porque es una tarea corta" }, { texto: "No, el EPP debe usarse siempre que exista el riesgo" }, { texto: "Depende si el supervisor está mirando" }, { texto: "Solo si el cajón está muy pesado" } ] },
+  { tipo: "opcion", texto: "“Si nunca tuve un accidente moviendo cajones, no es tan necesario usar siempre el EPP”.", opciones: [ { texto: "Mito" }, { texto: "Realidad" } ] },
+  { tipo: "opcion", texto: "¿Para qué sirve principalmente el EPP cuando movés cajones?", opciones: [ { texto: "Para cumplir una norma" }, { texto: "Para evitar sanciones" }, { texto: "Para proteger la salud del trabajador" }, { texto: "Para trabajar más cómodo" } ] },
+  { tipo: "opcion", texto: "Cuando movés cajones de cerveza, ¿usás siempre todos los EPP requeridos?", opciones: [ { texto: "Siempre" }, { texto: "A veces" }, { texto: "Solo cuando controlan" }, { texto: "Casi nunca" } ] },
+  { 
+    tipo: "imagen", 
+    texto: "¿Cuál de estas dos posiciones de los pies creés que es la correcta al momento de levantar una carga del piso?", 
+    opciones: [ 
+      { texto: "Posición A (Pies juntos detrás)", src: "21212121.PNG" }, 
+      { texto: "Posición B (Pies a los lados)", src: "3333333333333.PNG" } 
+    ] 
+  }
+];
+
+const PREGUNTAS_ADMINISTRATIVO = [
+  { tipo: "opcion", texto: "Tenés que ir un momento al depósito a buscar una planilla. No te colocás el calzado de seguridad porque “es solo un minuto”. ¿Es correcto?", opciones: [ { texto: "Sí, porque es rápido" }, { texto: "No, si ingreso al depósito debo usar el EPP correspondiente" }, { texto: "Depende si hay autoelevadores trabajando" }, { texto: "Solo si voy a cargar algo" } ] },
+  { tipo: "opcion", texto: "Un administrativo camina por el depósito con zapatillas comunes porque “no va a levantar nada”. ¿Qué está haciendo mal?", opciones: [ { texto: "Nada, no va a manipular cargas" }, { texto: "Debería usar el calzado de seguridad igual" }, { texto: "Solo debería usar casco" }, { texto: "El problema sería si corre" } ] },
+  { tipo: "opcion", texto: "“En la oficina no hace falta pensar en EPP porque no hay riesgos”.", opciones: [ { texto: "Mito" }, { texto: "Realidad" } ] },
+  { tipo: "opcion", texto: "Caminar diariamente desde la oficina hasta el depósito, cruzando zonas donde circulan autoelevadores. ¿Qué tan riesgoso te parece?", opciones: [ { texto: "1 Nada riesgoso" }, { texto: "2 Poco riesgoso" }, { texto: "3 Medianamente riesgoso" }, { texto: "4 Riesgoso" }, { texto: "5 Muy riesgoso" } ] },
+  { tipo: "opcion", texto: "¿Por qué un administrativo debería usar calzado de seguridad si ingresa al depósito?", opciones: [ { texto: "Para cumplir una norma" }, { texto: "Para evitar sanciones" }, { texto: "Porque puede haber golpes, caídas de objetos o pisadas indebidas" }, { texto: "Para no ensuciarse" } ] },
+  { tipo: "opcion", texto: "“Si solo voy a observar una tarea en el depósito, no necesito EPP”.", opciones: [ { texto: "Mito" }, { texto: "Realidad" } ] },
+  { tipo: "opcion", texto: "Vas caminando por el depósito y notás que no tenés el EPP colocado. ¿Qué hacés?", opciones: [ { texto: "Sigo porque ya estoy ahí" }, { texto: "Vuelvo a colocármelo antes de continuar" }, { texto: "Camino con más cuidado" }, { texto: "Aviso que voy sin EPP" } ] },
+  { tipo: "opcion", texto: "Cuando ingresás al depósito desde la oficina, ¿usás siempre el EPP requerido?", opciones: [ { texto: "Siempre" }, { texto: "A veces" }, { texto: "Solo cuando me lo recuerdan" }, { texto: "Casi nunca" } ] }
+];
+
+let preguntasActuales = []; 
+let currentQ   = 0;          
+let answers    = [];         
+let userData   = {};         
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goToRegister() {
+  showScreen('screen-register');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setSector(sector) {
+  document.getElementById('input-sector').value = sector;
+  document.getElementById('btn-operativo').className = 'btn btn-secondary';
+  document.getElementById('btn-admin').className = 'btn btn-secondary';
+  if (sector === 'Operativo') { document.getElementById('btn-operativo').className = 'btn btn-primary'; } 
+  else { document.getElementById('btn-admin').className = 'btn btn-primary'; }
+  document.getElementById('err-sector').style.display = 'none';
+}
+
+function startQuiz() {
+  const sector = document.getElementById('input-sector').value.trim();
+  if (!sector) { document.getElementById('err-sector').style.display = 'block'; return; } 
+
+  if (sector === 'Operativo') { preguntasActuales = PREGUNTAS_OPERATIVO; } 
+  else { preguntasActuales = PREGUNTAS_ADMINISTRATIVO; }
+
+  userData = { sector };
+  answers = new Array(preguntasActuales.length).fill(null);
+  currentQ = 0;
+
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const total = preguntasActuales.length;
+  const q     = preguntasActuales[currentQ];
+
+  const pct = Math.round((currentQ / total) * 100);
+  document.getElementById('q-counter').textContent     = `Pregunta ${currentQ + 1} de ${total}`;
+  document.getElementById('q-percent').textContent     = `${pct} %`;
+  document.getElementById('progress-fill').style.width = `${pct}%`;
+
+  const isLast = (currentQ === total - 1);
+  document.getElementById('btn-next').textContent = isLast ? 'Finalizar ✓' : 'Siguiente →';
+
+  let questionContentHTML = '';
+
+  if (q.tipo === "orden") {
+    let currentOrder = answers[currentQ] ? answers[currentQ].orden : q.opciones;
+    let itemsHTML = '';
+    currentOrder.forEach((texto) => {
+      itemsHTML += `<li class="sortable-item" draggable="true" data-texto="${texto}"><span class="drag-handle">☰</span><span>${texto}</span></li>`;
+    });
+    questionContentHTML = `<ul class="sortable-list" id="sortable-list">${itemsHTML}</ul>`;
+    answers[currentQ] = { orden: [...currentOrder] };
+
+  } else if (q.tipo === "imagen") {
+    let opcionesHTML = '<div class="image-options">';
+    q.opciones.forEach((op, idx) => {
+      const isSelected = (answers[currentQ] && answers[currentQ].opcionIdx === idx) ? 'selected' : '';
+      opcionesHTML += `
+        <div class="img-option-card ${isSelected}" onclick="selectImageAnswer(${idx})">
+          <img src="${op.src}" alt="Opción ${idx + 1}" />
+          <div class="img-option-label">${op.texto}</div>
+        </div>`;
+    });
+    opcionesHTML += '</div>';
+    questionContentHTML = opcionesHTML;
+
+  } else {
+    let opcionesHTML = '';
+    q.opciones.forEach((op, idx) => {
+      const checked  = (answers[currentQ] && answers[currentQ].opcionIdx === idx) ? 'checked' : '';
+      opcionesHTML += `
+        <li class="option-item">
+          <input type="radio" name="opcion" id="op${idx}" value="${idx}" ${checked} onchange="selectAnswer(${idx})">
+          <label for="op${idx}"><span class="radio-circle"></span>${op.texto}</label>
+        </li>`;
+    });
+    questionContentHTML = `<ul class="options-list">${opcionesHTML}</ul>`;
+  }
+
+  document.getElementById('question-card').innerHTML = `
+    <div class="q-number">Pregunta ${currentQ + 1} / ${total}</div>
+    <div class="q-text">${q.texto}</div>
+    ${questionContentHTML}
+    <div class="alert-answer" id="alert-answer">⚠ Por favor seleccioná una opción antes de continuar.</div>
+  `;
+
+  if (q.tipo === "orden") { initDragAndDrop(); }
+
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none'; card.offsetHeight; card.style.animation = '';
+}
+
+function selectAnswer(opcionIdx) {
+  answers[currentQ] = { opcionIdx };
+  document.getElementById('alert-answer').style.display = 'none';
+}
+
+function selectImageAnswer(opcionIdx) {
+  answers[currentQ] = { opcionIdx };
+  document.getElementById('alert-answer').style.display = 'none';
+  renderQuestion(); // Recarga la vista para aplicar el estilo "selected"
+}
+
+/* Drag and Drop Logic */
+function initDragAndDrop() {
+  const list = document.getElementById('sortable-list');
+  let draggingItem = null;
+
+  list.addEventListener('dragstart', (e) => { if (!e.target.classList || !e.target.classList.contains('sortable-item')) return; draggingItem = e.target; setTimeout(() => e.target.classList.add('dragging'), 0); });
+  list.addEventListener('dragend', (e) => { if (!e.target.classList || !e.target.classList.contains('sortable-item')) return; e.target.classList.remove('dragging'); draggingItem = null; updateOrderAnswer(); });
+  list.addEventListener('dragover', (e) => { e.preventDefault(); const afterElement = getDragAfterElement(list, e.clientY); const currentElement = document.querySelector('.dragging'); if (!currentElement) return; if (afterElement == null) { list.appendChild(currentElement); } else { list.insertBefore(currentElement, afterElement); } });
+  
+  list.addEventListener('touchstart', (e) => { const item = e.target.closest('.sortable-item'); if(!item) return; draggingItem = item; setTimeout(() => item.classList.add('dragging'), 0); }, {passive: true});
+  list.addEventListener('touchmove', (e) => { if(!draggingItem) return; e.preventDefault(); const touchY = e.touches[0].clientY; const afterElement = getDragAfterElement(list, touchY); if (afterElement == null) { list.appendChild(draggingItem); } else { list.insertBefore(draggingItem, afterElement); } }, {passive: false});
+  list.addEventListener('touchend', (e) => { if(!draggingItem) return; draggingItem.classList.remove('dragging'); draggingItem = null; updateOrderAnswer(); });
+}
+function getDragAfterElement(container, y) { const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')]; return draggableElements.reduce((closest, child) => { const box = child.getBoundingClientRect(); const offset = y - box.top - box.height / 2; if (offset < 0 && offset > closest.offset) { return { offset: offset, element: child }; } else { return closest; } }, { offset: Number.NEGATIVE_INFINITY }).element; }
+function updateOrderAnswer() { const list = document.getElementById('sortable-list'); const items = [...list.querySelectorAll('.sortable-item')]; const newOrder = items.map(item => item.getAttribute('data-texto')); answers[currentQ] = { orden: newOrder }; }
+
+function nextQuestion() {
+  if (!answers[currentQ]) { document.getElementById('alert-answer').style.display = 'block'; return; }
+  if (currentQ < preguntasActuales.length - 1) { currentQ++; renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); } 
+  else { showResult(); }
+}
+
+function showResult() {
+  let summaryHTML = '';
+  preguntasActuales.forEach((q, idx) => {
+    const ans = answers[idx];
+    let respuestaTexto = '—';
+    if (q.tipo === 'orden' && ans && ans.orden) { respuestaTexto = ans.orden.map((item, i) => `${i + 1}º ${item}`).join('<br>'); } 
+    else if (ans) { respuestaTexto = q.opciones[ans.opcionIdx].texto; }
+    summaryHTML += `<div class="answer-row"><div class="ar-q">${idx + 1}. ${q.texto}</div><div class="ar-a" style="margin-top: 5px;">${respuestaTexto}</div></div>`;
+  });
+  document.getElementById('answers-summary').innerHTML = summaryHTML;
+  saveRecord(); showScreen('screen-result'); window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function requestAdminAccess() {
+  const password = prompt("Área protegida. Ingresá la clave de administrador:");
+  if (password === "srt905") { showPanel(); } else if (password !== null) { alert("Clave incorrecta."); }
+}
+
+function showPanel() { showScreen('screen-panel'); renderPanel(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+function restartQuiz() {
+  document.getElementById('input-sector').value = ''; document.getElementById('btn-operativo').className = 'btn btn-secondary'; document.getElementById('btn-admin').className = 'btn btn-secondary';
+  userData = {}; answers = []; currentQ = 0; preguntasActuales = []; showScreen('screen-intro'); window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function saveRecord() {
+  const records = getRecords();
+  const record = {
+    id: Date.now(), fecha: new Date().toLocaleString('es-AR'), sector: userData.sector,
+    respuestas: preguntasActuales.map((q, idx) => {
+      let rElegida = '—';
+      if (answers[idx]) {
+        if (q.tipo === 'orden') { rElegida = answers[idx].orden.join(' ➔ '); } 
+        else { rElegida = q.opciones[answers[idx].opcionIdx].texto; }
+      }
+      return { pregunta: q.texto, opcionElegida: rElegida };
+    })
+  };
+  records.push(record); localStorage.setItem('hys_records', JSON.stringify(records));
+}
+
+function getRecords() { try { return JSON.parse(localStorage.getItem('hys_records')) || []; } catch { return []; } }
+
+function renderPanel() {
+  const records = getRecords(); const content = document.getElementById('panel-content');
+  if (records.length === 0) { content.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>Todavía no hay registros guardados.<br>Completá el cuestionario para que aparezca aquí.</p></div>`; return; }
+  let rows = ''; records.slice().reverse().forEach(r => { rows += `<tr><td>${r.fecha}</td><td><strong>${r.sector}</strong></td><td style="white-space:nowrap;"><button class="btn-detail" onclick="openDetail(${r.id})">Ver detalle</button></td></tr>`; });
+  content.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Sector / Puesto</th><th>Acciones</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function openDetail(id) {
+  const record = getRecords().find(r => r.id === id); if (!record) return;
+  let respuestasHTML = ''; record.respuestas.forEach((resp, idx) => { respuestasHTML += `<div class="answer-row"><div class="ar-q">${idx + 1}. ${resp.pregunta}</div><div class="ar-a" style="margin-top: 5px;">${resp.opcionElegida}</div></div>`; });
+  document.getElementById('modal-content').innerHTML = `<h3>📋 Respuestas del Cuestionario</h3><div class="modal-meta">Sector: <strong>${record.sector}</strong> &nbsp;·&nbsp; ${record.fecha}</div><div class="answers-summary">${respuestasHTML}</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(event) { if (!event || event.target === document.getElementById('modal-overlay') || event.currentTarget.classList.contains('modal-close')) { document.getElementById('modal-overlay').classList.remove('open'); } }
+</script>
+</body>
+</html>
