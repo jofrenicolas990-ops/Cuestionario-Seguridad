@@ -446,7 +446,7 @@
       <div class="result-banner" id="result-banner">
         <div class="result-icon">🎉</div>
         <div class="result-level">¡Cuestionario Completado!</div>
-        <div class="result-message">Muchas gracias por tu tiempo y colaboración. Tus respuestas han sido registradas y nos ayudarán a mejorar la seguridad en el trabajo.</div>
+        <div class="result-message">Muchas gracias por tu tiempo y colaboración. Tus respuestas han sido registradas.</div>
       </div>
       <div class="result-body">
         <h3>📋 Resumen de tus respuestas</h3>
@@ -479,34 +479,139 @@
 ================================================================ */
 
 const PREGUNTAS_OPERATIVO = [
-  { tipo: "opcion", texto: "Tenés que mover varios cajones de cerveza que están en el piso y llevarlos hasta un lugar que está a unos 8 metros. Un compañero te dice: “llevalos rápido así terminamos antes”. ¿Qué hacés?", opciones: [ { texto: "Los levanto rápido así termino antes" }, { texto: "Los arrastro como pueda" }, { texto: "Busco un carro/zorra o pido ayuda" }, { texto: "Los levanto doblando la espalda pero con cuidado" } ] },
-  { tipo: "opcion", texto: "Un operario levanta un cajón de cerveza del piso con las piernas estiradas y la espalda inclinada hacia adelante. ¿Qué está haciendo mal?", opciones: [ { texto: "Nada, esa postura es normal" }, { texto: "Debería flexionar las rodillas y mantener la espalda recta" }, { texto: "Debería levantarlo más rápido" }, { texto: "El problema es solo el peso del cajón" } ] },
-  { tipo: "orden", texto: "Ordená los pasos para levantar una carga correctamente (arrastrá las opciones hacia arriba o abajo para ordenarlas):", opciones: [ "Flexionar rodillas", "Mantener la espalda recta", "Acercar la carga al cuerpo", "Levantarse con la fuerza de las piernas" ] },
-  { tipo: "opcion", texto: "“Como el cajón no pesa tanto, no hace falta aplicar la técnica correcta para levantarlo”.", opciones: [ { texto: "Verdadero" }, { texto: "Falso" } ] },
-  { tipo: "opcion", texto: "Levantar cajones de cerveza desde el piso durante gran parte del turno. ¿Qué tan riesgoso te parece?", opciones: [ { texto: "1 Nada riesgoso" }, { texto: "2 Poco riesgoso" }, { texto: "3 Medianamente riesgoso" }, { texto: "4 Riesgoso" }, { texto: "5 Muy riesgoso" } ] },
-  { tipo: "opcion", texto: "Vas a mover cajones de cerveza por un momento “rápido”. Decidís no colocarte los EPP porque es algo simple. ¿Es correcto?", opciones: [ { texto: "Sí, porque es una tarea corta" }, { texto: "No, el EPP debe usarse siempre que exista el riesgo" }, { texto: "Depende si el supervisor está mirando" }, { texto: "Solo si el cajón está muy pesado" } ] },
-  { tipo: "opcion", texto: "“Si nunca tuve un accidente moviendo cajones, no es tan necesario usar siempre el EPP”.", opciones: [ { texto: "Verdadero" }, { texto: "Falso" } ] },
-  { tipo: "opcion", texto: "¿Para qué sirve principalmente el EPP cuando trabajas?", opciones: [ { texto: "Para cumplir una norma" }, { texto: "Para evitar sanciones" }, { texto: "Para proteger la salud del trabajador" }, { texto: "Para trabajar más cómodo" } ] },
-  { tipo: "opcion", texto: "Cuando trabajas en el depósito / zona operativa, ¿usás siempre todos los EPP requeridos?", opciones: [ { texto: "Siempre" }, { texto: "A veces" }, { texto: "Solo cuando controlan" }, { texto: "Casi nunca" } ] },
   { 
-    tipo: "imagen", 
-    texto: "¿Cuál de estas dos posiciones de los pies creés que es la correcta al momento de levantar una carga del piso?", 
+    tipo: "opcion", 
+    texto: "1. Respecto al Movimiento Manual de Cargas, ¿desde cuándo un objeto requiere considerar técnicas seguras de manipulación?", 
     opciones: [ 
-      { texto: "Posición A (Pies juntos detrás)", src: "21212121.PNG" }, 
-      { texto: "Posición B (Pies a los lados)", src: "3333333333333.PNG" } 
-    ] 
+      { texto: "a) A partir de 2 kg, si se manipula repetidamente." }, 
+      { texto: "b) Cuando supera los 3 kg." }, 
+      { texto: "c) Desde 5 kg, salvo que tenga buen agarre." }, 
+      { texto: "d) Solo cuando el esfuerzo se percibe como alto." } 
+    ],
+    correcta: 1 // b) Cuando supera los 3 kg.
+  },
+  { 
+    tipo: "opcion", 
+    texto: "2. Al incorporarse luego de levantar una carga desde el suelo, ¿qué grupo muscular debería realizar la mayor parte del esfuerzo?", 
+    opciones: [ 
+      { texto: "a) Piernas y glúteos." }, 
+      { texto: "b) Brazos y hombros, para estabilizar la carga." }, 
+      { texto: "c) Zona abdominal y lumbar, para sostener la postura." }, 
+      { texto: "d) Espalda alta y cuello, para mantener alineación." } 
+    ],
+    correcta: 0 // a) Piernas y glúteos.
+  },
+  { 
+    tipo: "opcion", 
+    texto: "3. Para minimizar la exigencia física durante el traslado, la carga debería mantenerse:", 
+    opciones: [ 
+      { texto: "a) A una distancia que permita visualizar completamente el camino." }, 
+      { texto: "b) Cerca del cuerpo, dentro de la zona entre rodillas y hombros." }, 
+      { texto: "c) A la altura del abdomen, aunque separada del torso." }, 
+      { texto: "d) A una altura media que facilite cambios rápidos de agarre." } 
+    ],
+    correcta: 1 // b) Cerca del cuerpo, dentro de la zona entre rodillas y hombros.
+  },
+  { 
+    tipo: "opcion", 
+    texto: "4. Si mientras transportás una carga necesitás girar hacia otro lado, ¿cuál es la forma más segura de hacerlo?", 
+    opciones: [ 
+      { texto: "a) Girar primero los hombros y luego acompañar con la cadera." }, 
+      { texto: "b) Reducir la velocidad y rotar el tronco de forma controlada." }, 
+      { texto: "c) Mover los pies para orientar todo el cuerpo hacia la nueva dirección." }, 
+      { texto: "d) Flexionar levemente la rodilla del lado del giro antes de rotar." } 
+    ],
+    correcta: 2 // c) Mover los pies para orientar todo el cuerpo hacia la nueva dirección.
+  },
+  { 
+    tipo: "opcion", 
+    texto: "5. Antes de mover manualmente una carga, ¿qué análisis previo es el más adecuado?", 
+    opciones: [ 
+      { texto: "a) Evaluar peso, agarre, recorrido y lugar de descarga." }, 
+      { texto: "b) Confirmar si el peso puede sostenerse durante al menos 10 segundos." }, 
+      { texto: "c) Verificar si el traslado puede hacerse sin detenerse." }, 
+      { texto: "d) Asegurarse de que el esfuerzo sea distribuido entre brazos y espalda." } 
+    ],
+    correcta: 0 // a) Evaluar peso, agarre, recorrido y lugar de descarga.
+  },
+  {
+    tipo: "imagen",
+    texto: "6. ¿Cuál de estas dos posiciones de los pies crees que es la correcta al momento de levantar una carga del piso?",
+    opciones: [
+      { texto: "Posición A", src: "posición pies (atras).PNG" },
+      { texto: "Posición B", src: "posición piess (correcta).PNG" }
+    ],
+    correcta: 1 // Posición B es la correcta
   }
 ];
 
 const PREGUNTAS_ADMINISTRATIVO = [
-  { tipo: "opcion", texto: "Tenés que ir un momento al depósito a buscar una planilla. No te colocás el calzado de seguridad/Punteras porque “es solo un minuto”. ¿Es correcto?", opciones: [ { texto: "Sí, porque es rápido" }, { texto: "No, si ingreso al depósito debo usar el EPP correspondiente" }, { texto: "Depende si hay autoelevadores trabajando" }, { texto: "Solo si voy a cargar algo" } ] },
-  { tipo: "opcion", texto: "Un administrativo camina por el depósito con zapatillas comunes porque “no va a levantar nada”. ¿Qué está haciendo mal?", opciones: [ { texto: "Nada, no va a manipular cargas" }, { texto: "Debería usar el calzado de seguridad igual" }, { texto: "Solo debería usar casco" }, { texto: "El problema sería si corre" } ] },
-  { tipo: "opcion", texto: "“En la oficina no hace falta pensar en EPP porque no hay riesgos”.", opciones: [ { texto: "Verdadero" }, { texto: "Falso" } ] },
-  { tipo: "opcion", texto: "Caminar diariamente desde la oficina hasta el depósito, cruzando zonas donde circulan autoelevadores. ¿Qué tan riesgoso te parece?", opciones: [ { texto: "1 Nada riesgoso" }, { texto: "2 Poco riesgoso" }, { texto: "3 Medianamente riesgoso" }, { texto: "4 Riesgoso" }, { texto: "5 Muy riesgoso" } ] },
-  { tipo: "opcion", texto: "¿Por qué un administrativo debería usar calzado de seguridad si ingresa al depósito?", opciones: [ { texto: "Para cumplir una norma" }, { texto: "Para evitar sanciones" }, { texto: "Porque puede haber golpes, caídas de objetos o pisadas indebidas" }, { texto: "Para no ensuciarse" } ] },
-  { tipo: "opcion", texto: "“Si solo voy a observar una tarea en el depósito, no necesito EPP”.", opciones: [ { texto: "Verdadero" }, { texto: "Falso" } ] },
-  { tipo: "opcion", texto: "Vas caminando por el depósito y notás que no tenés el EPP colocado. ¿Qué hacés?", opciones: [ { texto: "Sigo porque ya estoy ahí" }, { texto: "Vuelvo a colocármelo antes de continuar" }, { texto: "Camino con más cuidado" }, { texto: "Aviso que voy sin EPP" } ] },
-  { tipo: "opcion", texto: "Cuando ingresás al depósito desde la oficina, ¿usás siempre el EPP requerido?", opciones: [ { texto: "Siempre" }, { texto: "A veces" }, { texto: "Solo cuando me lo recuerdan" }, { texto: "Casi nunca" } ] }
+  { 
+    tipo: "opcion", 
+    texto: "1. ¿Cuál describe mejor la función del EPP?", 
+    opciones: [ 
+      { texto: "a) Minimizar la exposición al peligro cuando otros controles no son suficientes" }, 
+      { texto: "b) Eliminar completamente la posibilidad de lesión" }, 
+      { texto: "c) Garantizar que el trabajo pueda hacerse sin supervisión" }, 
+      { texto: "d) Reducir la necesidad de seguir procedimientos" } 
+    ],
+    correcta: 0 
+  },
+  { 
+    tipo: "opcion", 
+    texto: "2. ¿Por qué el EPP se ubica al final de la jerarquía de controles?", 
+    opciones: [ 
+      { texto: "a) Porque su implementación suele ser la más costosa" }, 
+      { texto: "b) Porque depende en gran parte de que la persona lo use correctamente" }, 
+      { texto: "c) Porque solo protege frente a riesgos mecánicos" }, 
+      { texto: "d) Porque requiere capacitación previa obligatoria" } 
+    ],
+    correcta: 1 
+  },
+  { 
+    tipo: "opcion", 
+    texto: "3. Tenés que entrar al depósito a dejar documentación y ves el sector aparentemente despejado. ¿Qué corresponde?", 
+    opciones: [ 
+      { texto: "a) Evaluar visualmente el entorno y entrar si no hay movimiento" }, 
+      { texto: "b) Ingresar acompañado por un operario" }, 
+      { texto: "c) Colocarte el EPP obligatorio antes de ingresar" }, 
+      { texto: "d) Esperar a que finalice toda operación de carga" } 
+    ],
+    correcta: 2 
+  },
+  { 
+    tipo: "opcion", 
+    texto: "4. En una intersección del depósito, no lográs hacer contacto visual con el chofer del autoelevador. ¿Qué interpretación es la más segura?", 
+    opciones: [ 
+      { texto: "a) El chofer probablemente detectó tu presencia por el movimiento" }, 
+      { texto: "b) Debés asumir que todavía no te identificó" }, 
+      { texto: "c) Podés avanzar si mantenés distancia lateral" }, 
+      { texto: "d) Solo hay riesgo si el equipo está cargado" } 
+    ],
+    correcta: 1 
+  },
+  { 
+    tipo: "opcion", 
+    texto: "5. Un casco presenta una pequeña fisura superficial pero sigue siendo cómodo de usar. ¿Qué implica esto?", 
+    opciones: [ 
+      { texto: "a) Puede seguir utilizándose si no recibió golpes fuertes" }, 
+      { texto: "b) Solo reduce parcialmente su vida útil" }, 
+      { texto: "c) Su capacidad de absorber impactos puede estar comprometida" }, 
+      { texto: "d) Debe cambiarse únicamente si se rompe por completo" } 
+    ],
+    correcta: 2 
+  },
+  { 
+    tipo: "opcion", 
+    texto: "6. ¿Qué conducta incrementa más el riesgo durante el tránsito peatonal en el depósito?", 
+    opciones: [ 
+      { texto: "a) Caminar fuera de la senda por un trayecto corto" }, 
+      { texto: "b) Detenerse cerca de una estantería para orientarse" }, 
+      { texto: "c) Circular mientras se responde un mensaje en el celular" }, 
+      { texto: "d) Cruzar luego de mirar ambos lados" } 
+    ],
+    correcta: 2 
+  }
 ];
 
 let preguntasActuales = []; 
@@ -648,9 +753,23 @@ function showResult() {
   preguntasActuales.forEach((q, idx) => {
     const ans = answers[idx];
     let respuestaTexto = '—';
-    if (q.tipo === 'orden' && ans && ans.orden) { respuestaTexto = ans.orden.map((item, i) => `${i + 1}º ${item}`).join('<br>'); } 
-    else if (ans) { respuestaTexto = q.opciones[ans.opcionIdx].texto; }
-    summaryHTML += `<div class="answer-row"><div class="ar-q">${idx + 1}. ${q.texto}</div><div class="ar-a" style="margin-top: 5px;">${respuestaTexto}</div></div>`;
+    let feedbackHTML = '';
+    
+    if (q.tipo === 'orden' && ans && ans.orden) { 
+      respuestaTexto = ans.orden.map((item, i) => `${i + 1}º ${item}`).join('<br>'); 
+    } else if (ans) { 
+      respuestaTexto = q.opciones[ans.opcionIdx].texto; 
+      
+      // Evaluación dinámica si la pregunta contiene la propiedad 'correcta'
+      if (q.correcta !== undefined) {
+        if (ans.opcionIdx === q.correcta) {
+          feedbackHTML = `<div style="color: var(--high); font-weight: 600; margin-top: 6px;">✅ ¡Correcto!</div>`;
+        } else {
+          feedbackHTML = `<div style="color: var(--low); font-weight: 600; margin-top: 6px;">❌ Incorrecto (La respuesta correcta era: ${q.opciones[q.correcta].texto})</div>`;
+        }
+      }
+    }
+    summaryHTML += `<div class="answer-row"><div class="ar-q">${idx + 1}. ${q.texto}</div><div class="ar-a" style="margin-top: 5px;"><strong>Tu respuesta:</strong> ${respuestaTexto}</div>${feedbackHTML}</div>`;
   });
   document.getElementById('answers-summary').innerHTML = summaryHTML;
   saveRecord(); showScreen('screen-result'); window.scrollTo({ top: 0, behavior: 'smooth' });
